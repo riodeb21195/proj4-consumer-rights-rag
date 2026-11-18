@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.13.8"
+  HF_HOME: ${{ github.workspace }}/.hf-cache
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: make lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      # With the ml extra the real-model test runs too (it is skipped on machines without torch).
+      - run: uv sync --frozen --extra ml
+      - uses: actions/cache@v6.1.0
+        with:
+          path: .hf-cache
+          key: hf-${{ hashFiles('src/rag/config.py') }}
+      - name: Unit + integration tests (testcontainers) with coverage gate
+        run: uv run pytest --cov --cov-report=term-missing --cov-report=xml
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: coverage
+          path: coverage.xml
+
+  eval-gate:
+    # Quality gate: index the small committed law set with the real model and fail the build
+    # if hit_rate@5 of the default retrieval variant drops below the threshold.
+    runs-on: ubuntu-latest
+    env:
+      RAG_DATABASE_URL: postgresql://rag:rag@localhost:5432/rag
+      RAG_S3_ENDPOINT_URL: http://localhost:9000
+      RAG_S3_ACCESS_KEY: minioadmin
+      RAG_S3_SECRET_KEY: minioadmin
+      # Derived from a real run on this fixture set: vector-paragraph hit_rate@5 = 0.74 (20/27).
+      # 0.70 fails the build as soon as more than one question is lost (docs/evaluation.md).
+      MIN_HIT_RATE: "0.70"
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - run: uv sync --frozen --no-dev --extra ml
+      - uses: actions/cache@v6.1.0
+        with:
+          path: .hf-cache
+          key: hf-${{ hashFiles('src/rag/config.py') }}
+      - name: Start Postgres (pgvector) and MinIO
+        run: |
+          docker run -d --name pg -p 5432:5432 -e POSTGRES_USER=rag -e POSTGRES_PASSWORD=rag \
+            -e POSTGRES_DB=rag pgvector/pgvector:0.8.7-pg17-trixie
+          docker run -d --name minio -p 9000:9000 \
+            cgr.dev/chainguard/minio@sha256:7618b82bba99aadd77fcf59eb6cfd89b4b8b8e01ac796c474d57a1c1abf17e79 \
+            server /data
+          for i in $(seq 1 30); do docker exec pg pg_isready -U rag -d rag && break; sleep 2; done
+      - name: Ingest the fixture laws
+        run: >
+          uv run --no-dev python -m rag.ingest.pipeline --source tests/fixtures/laws
+          --laws pangv_2022,evo_2023,bgb --schema db/init/01_schema.sql --trigger ci
+      - name: Evaluate (quality gate)
+        run: >
+          uv run --no-dev python -m evaluation.run_eval --only-indexed
+          --variants vector-paragraph,hybrid-paragraph,fulltext-paragraph
+          --results-dir ci-results --gate-variant vector-paragraph --gate-k 5
+          --min-hit-rate "$MIN_HIT_RATE" | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: eval-results
+          path: ci-results

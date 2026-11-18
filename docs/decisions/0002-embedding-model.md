@@ -1,24 +1,26 @@
-# 0002 – Embedding model: intfloat/multilingual-e5-small
+# 0002 – Embedding-Modell: intfloat/multilingual-e5-small
 
-- Status: accepted
-- Date: 2026-11-18
+- Status: angenommen
+- Datum: 18.11.2026
 
-## Context
-German text, CPU only (Intel MacBook 2019, no GPU), limited RAM, no paid APIs.
+## Kontext
+Deutscher Text, nur CPU (Intel-MacBook von 2019, keine GPU), begrenzter RAM, keine bezahlten APIs.
 
-## Decision
-`intfloat/multilingual-e5-small` via sentence-transformers:
+## Entscheidung
+`intfloat/multilingual-e5-small` über sentence-transformers:
 
-- multilingual incl. German, 384 dimensions, 512-token window (verified in the container:
+- mehrsprachig inkl. Deutsch, 384 Dimensionen, 512-Token-Fenster (im Container geprüft:
   `get_sentence_embedding_dimension() == 384`, `max_seq_length == 512`),
-- small enough for CPU: ~0.11 s per long passage on the 2019 Intel CPU inside Docker
-  (64 passages of ~600 chars in 7.2 s, measured 2026-11-18),
-- uses the `query: ` / `passage: ` prefixes, handled in `SentenceTransformerEmbedder`.
+- klein genug für die CPU: ca. 0,11 s pro längerer Passage auf der Intel-CPU von 2019 in Docker
+  (64 Passagen mit ca. 600 Zeichen in 7,2 s, gemessen am 18.11.2026),
+- nutzt die Präfixe `query: ` / `passage: `, umgesetzt in `SentenceTransformerEmbedder`.
 
-`paraphrase-multilingual-MiniLM-L12-v2` was considered; its 128-token limit would truncate
-most legal paragraphs.
+`paraphrase-multilingual-MiniLM-L12-v2` wurde geprüft; seine Grenze von 128 Tokens hätte die meisten
+Paragraphen abgeschnitten.
 
-## Consequences
-- The model name is part of the index config: switching models triggers a full re-index.
-- The column type is `vector(384)`; a model with another dimension needs a schema migration.
-- A deterministic `FakeEmbedder` (hashing trick) is used in tests so they run without PyTorch.
+## Konsequenzen
+- Der Modellname ist Teil der Index-Konfiguration: Ein Modellwechsel löst eine vollständige
+  Neuindizierung aus.
+- Der Spaltentyp ist `vector(384)`; ein Modell mit anderer Dimension braucht eine Schema-Migration.
+- In Tests wird ein deterministischer `FakeEmbedder` (Hashing-Trick) genutzt, damit sie ohne
+  PyTorch laufen.

@@ -1,34 +1,35 @@
-# 0001 – Chunk along the legal structure (§ / Absatz)
+# 0001 – Chunking entlang der Gesetzesstruktur (§ / Absatz)
 
-- Status: accepted
-- Date: 2026-11-18
+- Status: angenommen
+- Datum: 18.11.2026
 
-## Context
-Users ask about rights that live in specific provisions ("§ 355 BGB"). Answers must cite law and
-paragraph. Fixed-size character windows would cut through Absätze and enumerations, mix
-neighbouring paragraphs in one chunk and make citations ambiguous.
+## Kontext
+Nutzer fragen nach Rechten, die in bestimmten Vorschriften stehen („§ 355 BGB“). Antworten müssen
+Gesetz und Paragraph nennen. Feste Zeichenfenster würden Absätze und Aufzählungen zerschneiden,
+benachbarte Paragraphen in einem Chunk mischen und die Quellenangabe mehrdeutig machen.
 
-The XML from gesetze-im-internet.de already carries the structure: one `<norm>` per § with
-`<P>` elements per Absatz and `DL/DT/DD` for enumerations. Measured on the configured laws
-(2026-11-18): median § length 590 chars (BGB) to 2,158 chars (EnWG); the longest § has 32,331
-chars (EnWG), so some splitting below § level is unavoidable.
+Das XML von gesetze-im-internet.de bringt die Struktur schon mit: eine `<norm>` pro §, `<P>`-Elemente
+pro Absatz und `DL/DT/DD` für Aufzählungen. Gemessen an den konfigurierten Gesetzen (18.11.2026):
+Median-Länge eines § von 590 Zeichen (BGB) bis 2.158 Zeichen (EnWG); der längste § hat 32.331
+Zeichen (EnWG). Eine Teilung unterhalb der §-Ebene ist also unvermeidlich.
 
-## Decision
-Two strategies, both versioned as `CHUNKING_VERSION` and stored in `index_configs`:
+## Entscheidung
+Zwei Strategien, beide als `CHUNKING_VERSION` versioniert und in `index_configs` gespeichert:
 
-- **paragraph** (default): one chunk per §. If the § is longer than `chunk_max_chars` (2,000),
-  consecutive Absätze are grouped up to that limit.
-- **absatz**: one chunk per Absatz.
+- **paragraph** (Standard): ein Chunk pro §. Ist der § länger als `chunk_max_chars` (2.000),
+  werden aufeinanderfolgende Absätze bis zu dieser Grenze zusammengefasst.
+- **absatz**: ein Chunk pro Absatz.
 
-An Absatz that is still too long is split at enumeration lines, then sentence ends, and only as
-a last resort at word boundaries. Each chunk is embedded with a short context header:
-`<law> <§> Abs. <n> <heading>` plus the innermost section heading.
+Ein Absatz, der immer noch zu lang ist, wird an Aufzählungszeilen geteilt, dann an Satzenden und
+nur als letzter Ausweg an Wortgrenzen. Jeder Chunk wird mit einem kurzen Kontext-Header eingebettet:
+`<Gesetz> <§> Abs. <n> <Überschrift>` plus die innerste Abschnittsüberschrift.
 
-2,000 chars ≈ 500 tokens for German legal text, which fits the 512-token window of the
-embedding model (ADR 0002).
+2.000 Zeichen ≈ 500 Tokens bei deutschem Gesetzestext; das passt in das 512-Token-Fenster des
+Embedding-Modells (ADR 0002).
 
-## Consequences
-- Every chunk maps to exactly one §, so citations are always precise.
-- The two strategies are compared in the evaluation (`docs/evaluation.md`).
-- Changing chunking logic requires bumping `CHUNKING_VERSION`; the next ingest creates a new
-  index config and re-chunks every norm (old chunks remain until pruned).
+## Konsequenzen
+- Jeder Chunk gehört zu genau einem §, die Quellenangabe ist also immer eindeutig.
+- Die beiden Strategien werden in der Evaluation verglichen (`docs/evaluation.md`).
+- Eine Änderung der Chunking-Logik erfordert eine neue `CHUNKING_VERSION`; der nächste Ingest legt
+  eine neue Index-Konfiguration an und chunkt jede Norm neu (alte Chunks bleiben, bis man sie
+  löscht).

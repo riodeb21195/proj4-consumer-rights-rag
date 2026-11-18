@@ -1,25 +1,28 @@
-# 0003 – Postgres + pgvector as the only index
+# 0003 – Postgres + pgvector als einziger Index
 
-- Status: accepted
-- Date: 2026-11-18
+- Status: angenommen
+- Datum: 18.11.2026
 
-## Context
-We need vector search, German full-text search, metadata, versioning and lineage. The corpus is
-small (a few thousand chunks).
+## Kontext
+Wir brauchen Vektorsuche, deutsche Volltextsuche, Metadaten, Versionierung und Lineage. Der Korpus
+ist klein (einige tausend Chunks).
 
-## Decision
-One Postgres 17 database with the pgvector extension (image `pgvector/pgvector:0.8.7-pg17`):
+## Entscheidung
+Eine Postgres-17-Datenbank mit der Extension pgvector (Image `pgvector/pgvector:0.8.7-pg17`):
 
-- `chunks.embedding vector(384)` with an HNSW index (cosine),
-- `chunks.tsv` as a generated `tsvector` with the `german` configuration and a GIN index,
-- relational tables for runs, law versions, norms, index configs and the answer log.
+- `chunks.embedding vector(384)` mit einem HNSW-Index (Cosinus),
+- `chunks.tsv` als generierter `tsvector` mit der Konfiguration `german` und einem GIN-Index,
+- relationale Tabellen für Läufe, Gesetzesversionen, Normen, Index-Konfigurationen und das
+  Antwort-Log.
 
-A dedicated vector database (Qdrant, Weaviate, ...) was not chosen: it would duplicate metadata,
-need a second consistency mechanism and another container on a machine with little RAM.
+Eine eigene Vektordatenbank (Qdrant, Weaviate, …) wurde nicht gewählt: Sie würde Metadaten doppelt
+halten, einen zweiten Konsistenzmechanismus brauchen und einen weiteren Container auf einem Rechner
+mit wenig RAM.
 
-## Consequences
-- Hybrid search is plain SQL; per-law ingest is a single ACID transaction (index and metadata
-  can never disagree).
-- Lineage is a join: answer_log -> chunks -> norms -> law_versions -> raw XML in MinIO.
-- HNSW with a `WHERE index_config_id = ...` filter uses pgvector's iterative scans (>= 0.8) to
-  keep recall when several index configs coexist.
+## Konsequenzen
+- Hybrid-Suche ist reines SQL; der Ingest pro Gesetz ist eine einzige ACID-Transaktion (Index und
+  Metadaten können nie auseinanderlaufen).
+- Lineage ist ein Join: answer_log -> chunks -> norms -> law_versions -> Roh-XML in MinIO.
+- HNSW mit einem Filter `WHERE index_config_id = ...` nutzt die iterativen Scans von pgvector
+  (>= 0.8), damit kein Recall verloren geht, wenn mehrere Index-Konfigurationen nebeneinander
+  existieren.

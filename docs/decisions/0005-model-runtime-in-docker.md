@@ -1,24 +1,25 @@
-# 0005 – Model runtime only in Linux containers
+# 0005 – Modell-Laufzeit nur in Linux-Containern
 
-- Status: accepted
-- Date: 2026-11-18
+- Status: angenommen
+- Datum: 18.11.2026
 
-## Context
-PyTorch publishes no wheels for macOS x86_64 since 2.2.2. Verified on the development machine
-(Intel MacBook 2019) on 2026-11-18:
+## Kontext
+PyTorch veröffentlicht seit Version 2.2.2 keine Wheels mehr für macOS x86_64. Geprüft auf dem
+Entwicklungsrechner (Intel-MacBook von 2019) am 18.11.2026:
 
-- `uv add sentence-transformers` fails: torch 2.15.0 has wheels only for
-  manylinux x86_64/aarch64, macOS arm64 and Windows,
-- pinning torch 2.2.2 installs, but transformers 5.23 crashes on import
-  (`NameError: name 'nn' is not defined`).
+- `uv add sentence-transformers` schlägt fehl: Torch 2.15.0 hat Wheels nur für
+  manylinux x86_64/aarch64, macOS arm64 und Windows,
+- mit festgesetztem Torch 2.2.2 klappt die Installation, aber transformers 5.23 stürzt beim Import
+  ab (`NameError: name 'nn' is not defined`).
 
-## Decision
-- The model dependencies live in the optional extra `ml` (sentence-transformers, CPU-only torch
-  from the PyTorch CPU index on Linux).
-- API, ingest/Airflow and evaluation run in Linux containers that install `ml`.
-- The local venv is for linting and tests; tests use `FakeEmbedder`. The one test that loads
-  the real model is skipped when sentence-transformers is not installed and runs in CI.
+## Entscheidung
+- Die Modell-Abhängigkeiten liegen im optionalen Extra `ml` (sentence-transformers, Torch nur für
+  CPU aus dem PyTorch-CPU-Index unter Linux).
+- API, Ingest/Airflow und Evaluation laufen in Linux-Containern, die `ml` installieren.
+- Das lokale venv ist für Linting und Tests; Tests nutzen `FakeEmbedder`. Der eine Test, der das
+  echte Modell lädt, wird übersprungen, wenn sentence-transformers fehlt, und läuft in der CI.
 
-## Consequences
-- The same image runs locally, in CI and would run in production.
-- Local experiments with the real model go through `docker compose run` instead of the host venv.
+## Konsequenzen
+- Dasselbe Image läuft lokal, in der CI und würde so auch in Produktion laufen.
+- Lokale Experimente mit dem echten Modell gehen über `docker compose run` statt über das venv auf
+  dem Rechner.

@@ -1,16 +1,17 @@
-# 0000 – Record architecture decisions
+# 0000 – Architekturentscheidungen festhalten
 
-- Status: accepted
-- Date: 2026-11-18
+- Status: angenommen
+- Datum: 18.11.2026
 
-## Context
-Several choices in this project (chunking, embedding model, vector store, retrieval strategy)
-have trade-offs that are not obvious from the code alone.
+## Kontext
+Mehrere Entscheidungen in diesem Projekt (Chunking, Embedding-Modell, Vektorspeicher,
+Retrieval-Strategie) haben Zielkonflikte, die man am Code allein nicht erkennt.
 
-## Decision
-Each significant decision is recorded as a short ADR in `docs/decisions/NNNN-title.md` with the
-sections *Context*, *Decision*, *Consequences* and, where useful, *Alternatives considered*.
+## Entscheidung
+Jede wichtige Entscheidung wird als kurzer ADR in `docs/decisions/NNNN-titel.md` festgehalten, mit
+den Abschnitten *Kontext*, *Entscheidung*, *Konsequenzen* und, wo sinnvoll, *Geprüfte
+Alternativen*.
 
-## Consequences
-Decisions are reviewable in pull requests and stay next to the code they explain.
-Superseded ADRs are kept and marked as such instead of being deleted.
+## Konsequenzen
+Entscheidungen lassen sich in Pull Requests prüfen und liegen neben dem Code, den sie erklären.
+Überholte ADRs werden nicht gelöscht, sondern als überholt markiert.

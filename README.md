@@ -79,7 +79,7 @@ Python 3.12 (uv) · Airflow 3.4 · MinIO · Postgres 17 + pgvector · sentence-t
 - **die Retrieval-Qualität sinkt:** Die CI schlägt fehl, Prometheus löst `RagEvalBelowThreshold` aus.
 
 Zu jedem Fall gibt es ein Demo-Skript (`make scenarios`). Weitere Fälle:
-[docs/architecture.md](docs/architecture.md#what-happens-when).
+[docs/architecture.md](docs/architecture.md#was-passiert-wenn).
 
 ## Design-Entscheidungen
 
@@ -95,7 +95,7 @@ Zu jedem Fall gibt es ein Demo-Skript (`make scenarios`). Weitere Fälle:
 - Keine Auslegung, keine Rechtsprechung, kein Landesrecht; das System findet nur Gesetzestext.
 - Fünf Bundesgesetze, beim BGB nur die verbraucherrelevanten Teile.
 - 45 Fragen von einem Autor; 13 davon werden nicht in den Top 5 beantwortet
-  ([Liste](docs/evaluation.md#where-the-default-variant-fails)).
+  ([Liste](docs/evaluation.md#wo-die-standardvariante-scheitert)).
 - Reranking bringt +0,11 Hit@5, ist auf der Ziel-CPU aber zu langsam.
 
 ## Dokumentation

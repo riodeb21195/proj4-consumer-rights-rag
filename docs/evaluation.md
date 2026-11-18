@@ -1,69 +1,72 @@
 # Evaluation
 
-How well does retrieval find the provision that answers a consumer's question?
+Wie gut findet das Retrieval die Vorschrift, die die Frage eines Verbrauchers beantwortet?
 
-## Setup
+## Aufbau
 
-- **Questions:** 45 German questions in `evaluation/questions.jsonl`, phrased the way consumers ask
-  ("Wer zahlt das Porto für die Rücksendung …?"), not in statutory language. Each lists the
-  expected law + paragraph(s). The expected paragraphs were checked against the official text
-  (existence, not repealed, inside the configured BGB ranges); the questions themselves were
-  written by the author of this project, not taken from an external benchmark.
-- **Corpus:** BGB (consumer parts), EVO, PAngV, EnWG, TKG as of 2026-11-18:
-  1,022 provisions, 1,751 chunks (`paragraph`) / 3,649 chunks (`absatz`).
-- **Model:** `intfloat/multilingual-e5-small` on CPU.
-- **Metrics:** retrieved chunks are collapsed to distinct (law, paragraph) in rank order.
-  *Hit-Rate@k* = share of questions with an expected paragraph among the first k;
-  *MRR* = mean of 1/rank of the first expected paragraph (0 if none in the top 30 chunks).
-- **Run:** `make eval` (results: `evaluation/results/<timestamp>_<variant>.json`, including the
-  git SHA, index config and the rank per question).
+- **Fragen:** 45 deutsche Fragen in `evaluation/questions.jsonl`, so formuliert, wie Verbraucher
+  fragen („Wer zahlt das Porto für die Rücksendung …?“), nicht in Gesetzessprache. Zu jeder Frage
+  sind das erwartete Gesetz und die erwarteten Paragraphen angegeben. Die erwarteten Paragraphen
+  wurden am amtlichen Text geprüft (vorhanden, nicht aufgehoben, innerhalb der konfigurierten
+  BGB-Bereiche); die Fragen selbst hat der Autor dieses Projekts geschrieben, sie stammen nicht aus
+  einem externen Benchmark.
+- **Korpus:** BGB (Verbraucherteile), EVO, PAngV, EnWG, TKG mit Stand vom 18.11.2026:
+  1.022 Vorschriften, 1.751 Chunks (`paragraph`) / 3.649 Chunks (`absatz`).
+- **Modell:** `intfloat/multilingual-e5-small` auf der CPU.
+- **Metriken:** Die gefundenen Chunks werden in Rangfolge auf eindeutige (Gesetz, Paragraph)
+  reduziert. *Hit-Rate@k* = Anteil der Fragen, bei denen ein erwarteter Paragraph unter den ersten k
+  ist; *MRR* = Mittelwert von 1/Rang des ersten erwarteten Paragraphen (0, wenn keiner unter den
+  ersten 30 Chunks ist).
+- **Ausführen:** `make eval` (Ergebnisse: `evaluation/results/<zeitstempel>_<variante>.json`,
+  inklusive Git-SHA, Index-Konfiguration und Rang pro Frage).
 
-## Results (2026-11-18, git `b00b7e8`, 45 questions)
+## Ergebnisse (18.11.2026, Git `b00b7e8`, 45 Fragen)
 
-| Variant | Hit@1 | Hit@3 | Hit@5 | Hit@10 | MRR |
+| Variante | Hit@1 | Hit@3 | Hit@5 | Hit@10 | MRR |
 |---|---:|---:|---:|---:|---:|
-| **vector-paragraph** (default) | 0.42 | 0.64 | **0.71** | 0.82 | 0.55 |
-| vector-absatz | 0.42 | 0.60 | 0.71 | 0.84 | 0.55 |
-| fulltext-paragraph | 0.13 | 0.20 | 0.36 | 0.47 | 0.22 |
-| hybrid-paragraph (RRF) | 0.38 | 0.53 | 0.62 | 0.76 | 0.49 |
-| hybrid-absatz (RRF) | 0.38 | 0.53 | 0.62 | 0.78 | 0.49 |
-| hybrid-paragraph + cross-encoder rerank | 0.51 | 0.78 | 0.82 | 0.87 | 0.65 |
+| **vector-paragraph** (Standard) | 0,42 | 0,64 | **0,71** | 0,82 | 0,55 |
+| vector-absatz | 0,42 | 0,60 | 0,71 | 0,84 | 0,55 |
+| fulltext-paragraph | 0,13 | 0,20 | 0,36 | 0,47 | 0,22 |
+| hybrid-paragraph (RRF) | 0,38 | 0,53 | 0,62 | 0,76 | 0,49 |
+| hybrid-absatz (RRF) | 0,38 | 0,53 | 0,62 | 0,78 | 0,49 |
+| hybrid-paragraph + Cross-Encoder-Reranking | 0,51 | 0,78 | 0,82 | 0,87 | 0,65 |
 
-Rerank model: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`, 30 candidates per question.
-The rerank run took 20 min 22 s for 45 questions (≈ 27 s per question) on the 2019 Intel CPU;
-the other variants need well under a second per question.
+Reranking-Modell: `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1`, 30 Kandidaten pro Frage.
+Der Reranking-Lauf brauchte für 45 Fragen 20 Min. 22 s (≈ 27 s pro Frage) auf der Intel-CPU von
+2019; die anderen Varianten brauchen deutlich unter einer Sekunde pro Frage.
 
-## Findings
+## Erkenntnisse
 
-1. **Lexical search fails on lay vocabulary.** Consumers say "Porto", "Handyvertrag",
-   "Kaution"; the law says "Kosten der Rücksendung", "öffentlich zugängliche
-   Telekommunikationsdienste", "Mietsicherheit". Full-text search (Postgres `german` config,
-   OR-query over all question terms, `ts_rank_cd`) reaches only 0.36 Hit@5. It favours long
-   provisions that contain many common words (e.g. TKG § 112 appears for unrelated questions).
-2. **Hybrid fusion therefore hurts.** RRF gives the weak full-text ranking the same say as the
-   vector ranking: Hit@5 drops from 0.71 to 0.62. Two follow-up experiments (not committed as
-   variants, numbers from one-off runs on the same questions):
-   - weighting the full-text list in RRF with 0.5 / 0.3 / 0.2 gave Hit@5 0.62 / 0.67 / 0.67,
-     never better than pure vector search;
-   - an IDF-weighted full-text score (BM25-like, rare terms count more) improved full-text
-     alone only from 0.38 to 0.40 Hit@5.
-3. **Chunking strategy barely matters here.** `paragraph` and `absatz` give the same Hit@5;
-   `absatz` is slightly better at Hit@10 but doubles the number of chunks and embedding time.
-   `paragraph` stays the default.
-4. **A cross-encoder reranker is clearly best** (+0.11 Hit@5, +0.10 MRR over pure vector), but
-   at ~27 s per question it is not usable interactively on this hardware.
+1. **Lexikalische Suche scheitert am Alltagswortschatz.** Verbraucher sagen „Porto“,
+   „Handyvertrag“, „Kaution“; das Gesetz sagt „Kosten der Rücksendung“, „öffentlich zugängliche
+   Telekommunikationsdienste“, „Mietsicherheit“. Die Volltextsuche (Postgres-Konfiguration
+   `german`, OR-Query über alle Wörter der Frage, `ts_rank_cd`) erreicht nur 0,36 Hit@5. Sie
+   bevorzugt lange Vorschriften mit vielen allgemeinen Wörtern (z. B. taucht TKG § 112 bei Fragen
+   auf, die nichts damit zu tun haben).
+2. **Hybrid-Fusion schadet deshalb.** RRF gibt dem schwachen Volltext-Ranking dasselbe Gewicht wie
+   dem Vektor-Ranking: Hit@5 sinkt von 0,71 auf 0,62. Zwei Folgeexperimente (nicht als Varianten
+   committet, Zahlen aus einmaligen Läufen auf denselben Fragen):
+   - Das Volltext-Ranking in RRF mit 0,5 / 0,3 / 0,2 zu gewichten ergab Hit@5 0,62 / 0,67 / 0,67,
+     nie besser als reine Vektorsuche;
+   - ein IDF-gewichteter Volltext-Score (BM25-ähnlich, seltene Wörter zählen mehr) verbesserte den
+     Volltext allein nur von 0,38 auf 0,40 Hit@5.
+3. **Die Chunking-Strategie spielt hier kaum eine Rolle.** `paragraph` und `absatz` liefern
+   dasselbe Hit@5; `absatz` ist bei Hit@10 etwas besser, verdoppelt aber die Zahl der Chunks und
+   die Embedding-Zeit. `paragraph` bleibt Standard.
+4. **Ein Cross-Encoder-Reranker ist klar am besten** (+0,11 Hit@5, +0,10 MRR gegenüber reiner
+   Vektorsuche), aber mit ≈ 27 s pro Frage auf dieser Hardware nicht interaktiv nutzbar.
 
-**Decision:** the API defaults to `vector` retrieval on the `paragraph` index; hybrid and
-full-text search stay selectable (`RAG_RETRIEVAL_MODE`, UI sidebar) and are evaluated on every
-run; reranking is optional (`RAG_RERANK_ENABLED=true`) for machines with more CPU/GPU.
-See ADR 0006.
+**Entscheidung:** Die API nutzt standardmäßig `vector`-Retrieval auf dem `paragraph`-Index;
+Hybrid- und Volltextsuche bleiben wählbar (`RAG_RETRIEVAL_MODE`, Seitenleiste der UI) und werden
+bei jedem Lauf mitbewertet; Reranking ist optional (`RAG_RERANK_ENABLED=true`) für Rechner mit mehr
+CPU/GPU. Siehe ADR 0006.
 
-## Where the default variant fails
+## Wo die Standardvariante scheitert
 
-Questions not answered within the top 5 by `vector-paragraph` (rank of the expected paragraph,
-rank after reranking):
+Fragen, die `vector-paragraph` nicht in den Top 5 beantwortet (Rang des erwarteten Paragraphen,
+Rang nach Reranking):
 
-| Question | Expected | Rank | Rerank |
+| Frage | Erwartet | Rang | Reranking |
 |---|---|---:|---:|
 | Wie lange habe ich Zeit, einen online gekauften Artikel zurückzugeben …? | § 355 / § 356 BGB | 28 | 10 |
 | Bei welchen Bestellungen gibt es kein Widerrufsrecht …? | § 312g BGB | 10 | 1 |
@@ -79,27 +82,26 @@ rank after reranking):
 | Darf ich die Miete kürzen, wenn die Heizung ausfällt? | § 536 BGB | – | 17 |
 | Kann ich einen Ratenkredit noch widerrufen? | § 495 / § 356b BGB | 9 | 5 |
 
-Typical causes: neighbouring provisions that use the same vocabulary (§§ 435–438 around § 434,
-§§ 559 ff. "Mieterhöhung nach Modernisierung" for a question about reducing rent) and
-paraphrases with no lexical overlap ("Extragebühr" vs. "Entgelt für die Nutzung eines
-Zahlungsmittels").
+Typische Ursachen: Nachbarvorschriften mit demselben Vokabular (§§ 435–438 rund um § 434,
+§§ 559 ff. „Mieterhöhung nach Modernisierung“ bei einer Frage zur Mietminderung) und Umschreibungen
+ohne gemeinsame Wörter („Extragebühr“ vs. „Entgelt für die Nutzung eines Zahlungsmittels“).
 
-## Quality gate and alerting
+## Quality Gate und Alarme
 
-- **CI** (`.github/workflows/ci.yml`, job `eval-gate`) indexes the committed fixture set
-  (EVO, PAngV, trimmed BGB) with the real model and evaluates the 27 questions answerable from
-  it (`--only-indexed`). A local run of exactly this job on 2026-11-18 gave `vector-paragraph`
-  Hit@5 = 0.74 (20/27), `hybrid-paragraph` 0.67, `fulltext-paragraph` 0.48.
-  **Threshold: 0.70** — the build fails as soon as more than one of the 27 questions is lost.
-- **Prometheus alert** `RagEvalBelowThreshold` uses `RAG_EVAL_HIT_RATE_THRESHOLD = 0.65` on the full
-  set (0.71 = 32/45 today; fires when more than two questions are lost).
-  `RagEvalRegression` fires when Hit@5 of any variant drops by more than 2 points against the
-  previous run.
+- **CI** (`.github/workflows/ci.yml`, Job `eval-gate`) indexiert das committete Fixture-Set (EVO,
+  PAngV, gekürztes BGB) mit dem echten Modell und bewertet die 27 Fragen, die damit beantwortbar
+  sind (`--only-indexed`). Ein lokaler Lauf genau dieses Jobs am 18.11.2026 ergab für
+  `vector-paragraph` Hit@5 = 0,74 (20/27), `hybrid-paragraph` 0,67, `fulltext-paragraph` 0,48.
+  **Schwelle: 0,70** – der Build schlägt fehl, sobald mehr als eine der 27 Fragen verloren geht.
+- **Prometheus-Alarm** `RagEvalBelowThreshold` nutzt `RAG_EVAL_HIT_RATE_THRESHOLD = 0,65` auf dem
+  vollen Set (heute 0,71 = 32/45; schlägt an, wenn mehr als zwei Fragen verloren gehen).
+  `RagEvalRegression` schlägt an, wenn Hit@5 einer Variante um mehr als 2 Punkte gegenüber dem
+  vorigen Lauf fällt.
 
-## Limitations
+## Grenzen
 
-- 45 questions are a small sample: one question moves Hit@k by 2.2 points.
-- There is no held-out set. The fusion-weight and IDF experiments above were measured on the
-  same questions they would be judged on, which is one more reason they were not adopted.
-- Questions and expected paragraphs come from one author; several provisions can be valid
-  answers, only the listed ones count as hits.
+- 45 Fragen sind eine kleine Stichprobe: Eine Frage verschiebt Hit@k um 2,2 Punkte.
+- Es gibt kein Held-out-Set. Die Experimente mit Fusionsgewichten und IDF wurden auf denselben
+  Fragen gemessen, an denen sie bewertet würden – ein weiterer Grund, sie nicht zu übernehmen.
+- Fragen und erwartete Paragraphen stammen von einem Autor; mehrere Vorschriften können richtige
+  Antworten sein, gezählt werden nur die angegebenen.

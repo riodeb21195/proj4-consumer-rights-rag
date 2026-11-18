@@ -1,3 +1,5 @@
+# Law fixtures are byte-exact copies of the official XML and must not be touched.
+exclude: ^tests/fixtures/laws/
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dokumente builddate="20260101120000" doknr="BJNRTEST">
+<norm doknr="BJNRTEST"><metadaten><jurabk>TestG</jurabk><amtabk>TG</amtabk>
+<langue>Testgesetz</langue><standangabe><standtyp>Stand</standtyp>
+<standkommentar>Zuletzt geändert 2026</standkommentar></standangabe></metadaten></norm>
+<norm doknr="T0"><metadaten><jurabk>TestG</jurabk><enbez>Inhaltsübersicht</enbez></metadaten>
+<textdaten><text><Content><TOC><Title>ignored</Title></TOC></Content></text></textdaten></norm>
+<norm doknr="T00"><metadaten><jurabk>TestG</jurabk><gliederungseinheit>
+<gliederungskennzahl>010</gliederungskennzahl><gliederungsbez>Abschnitt 1</gliederungsbez>
+<gliederungstitel>Allgemeines</gliederungstitel></gliederungseinheit></metadaten></norm>
+<norm doknr="T1"><metadaten><jurabk>TestG</jurabk><enbez>§ 1</enbez><titel>Anwendungsbereich</titel></metadaten>
+<textdaten><text><Content><P><FnR ID="x"/></P><P>(1) Dieses Gesetz gilt für Verbraucher.</P>
+<P>(2) Es gilt nicht für<DL><DT>1.</DT><DD><LA>Unternehmer,</LA></DD><DT>2.</DT><DD><LA>Behörden.</LA></DD></DL></P>
+<P>Satz nach der Liste.</P></Content><Footnotes><Footnote>Amtlicher Hinweis</Footnote></Footnotes></text></textdaten></norm>
+<norm doknr="T2"><metadaten><jurabk>TestG</jurabk><enbez>§ 2</enbez><titel>(weggefallen)</titel></metadaten>
+<textdaten><text><Content><P/></Content></text></textdaten></norm>
+<norm doknr="T3"><metadaten><jurabk>TestG</jurabk><enbez>§ 2a</enbez><titel>Preise</titel></metadaten>
+<textdaten><text><Content><P>Preise sind anzugeben.</P></Content></text></textdaten></norm>
+<norm doknr="T4"><metadaten><jurabk>TestG</jurabk><enbez>Anlage</enbez><titel>Muster</titel></metadaten>
+<textdaten><text><Content><P>Musterformular</P></Content></text></textdaten></norm>
+</dokumente>

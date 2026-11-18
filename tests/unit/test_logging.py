@@ -36,7 +36,10 @@ def test_exception_is_serialised():
 
 
 def test_configure_logging_writes_json(capsys):
+    root = logging.getLogger()
+    saved = root.handlers[:], root.level
     configure_logging("DEBUG")
     logging.getLogger("rag.x").info("ping", extra={"run_id": 3})
     line = capsys.readouterr().out.strip().splitlines()[-1]
+    root.handlers[:], root.level = saved[0], saved[1]
     assert json.loads(line)["run_id"] == 3

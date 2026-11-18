@@ -1,0 +1,203 @@
+# Local stack. Memory limits are sized for Docker Desktop with ~5 GB RAM (Intel MacBook 2019).
+# Health checks use generous timeouts: the Airflow CLI needs >10 s on that CPU.
+name: consumer-rights-rag
+
+x-rag-env: &rag-env
+  RAG_LOG_LEVEL: ${RAG_LOG_LEVEL:-INFO}
+  RAG_DATABASE_URL: postgresql://rag:${POSTGRES_PASSWORD:-rag}@postgres:5432/rag
+  RAG_S3_ENDPOINT_URL: http://minio:9000
+  RAG_S3_ACCESS_KEY: ${MINIO_ROOT_USER:-minioadmin}
+  RAG_S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-minioadmin}
+  RAG_EMBEDDING_MODEL: ${RAG_EMBEDDING_MODEL:-intfloat/multilingual-e5-small}
+  RAG_CHUNKING_STRATEGY: ${RAG_CHUNKING_STRATEGY:-paragraph}
+  RAG_LLM_ENABLED: ${RAG_LLM_ENABLED:-false}
+  RAG_OLLAMA_URL: http://ollama:11434
+  RAG_OLLAMA_MODEL: ${RAG_OLLAMA_MODEL:-qwen2.5:1.5b}
+  HF_HOME: /hf-cache
+
+x-airflow-common: &airflow-common
+  build:
+    context: .
+    dockerfile: airflow/Dockerfile
+  image: consumer-rights-rag-airflow:local
+  environment: &airflow-env
+    <<: *rag-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__PARALLELISM: "2"
+    AIRFLOW__CORE__AUTH_MANAGER: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg://airflow:${AIRFLOW_DB_PASSWORD:-airflow}@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW_FERNET_KEY:-}
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__EXECUTION_API_SERVER_URL: http://airflow-apiserver:8080/execution/
+    AIRFLOW__API__WORKERS: "1"
+    AIRFLOW__API_AUTH__JWT_SECRET: ${AIRFLOW_JWT_SECRET:-change-me-local-only}
+    AIRFLOW__API_AUTH__JWT_ISSUER: airflow
+    AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: "true"
+    RAG_LAW_SLUGS: ${RAG_LAW_SLUGS:-bgb,evo_2023,pangv_2022,enwg_2005,tkg_2021}
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - airflow-logs:/opt/airflow/logs
+    - hf-cache:/hf-cache
+  user: "50000:0"
+  depends_on: &airflow-depends
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg17-trixie
+    environment:
+      POSTGRES_USER: rag
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rag}
+      POSTGRES_DB: rag
+      AIRFLOW_DB_PASSWORD: ${AIRFLOW_DB_PASSWORD:-airflow}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rag", "-d", "rag"]
+      interval: 5s
+      retries: 20
+    mem_limit: 512m
+    restart: unless-stopped
+
+  minio:
+    # MinIO's own Docker Hub image is gone; Chainguard builds MinIO from source (ADR 0004).
+    image: cgr.dev/chainguard/minio@sha256:7618b82bba99aadd77fcf59eb6cfd89b4b8b8e01ac796c474d57a1c1abf17e79
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio-data:/data
+    mem_limit: 256m
+    restart: unless-stopped
+
+  api:
+    build: .
+    image: consumer-rights-rag-api:local
+    environment:
+      <<: *rag-env
+      RAG_EVAL_RESULTS_DIR: /app/evaluation/results
+    ports:
+      - "8000:8000"
+    volumes:
+      - hf-cache:/hf-cache
+      - ./evaluation:/app/evaluation
+      - ./scripts:/app/scripts:ro
+      - ./tests/fixtures:/app/tests/fixtures:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 120s
+    mem_limit: 1536m
+    restart: unless-stopped
+
+  app:
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+    image: consumer-rights-rag-app:local
+    environment:
+      RAG_API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    mem_limit: 384m
+    restart: unless-stopped
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - /entrypoint airflow version
+    environment:
+      <<: *airflow-env
+      _AIRFLOW_DB_MIGRATE: "true"
+      _AIRFLOW_WWW_USER_CREATE: "true"
+      _AIRFLOW_WWW_USER_USERNAME: ${AIRFLOW_ADMIN_USER:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${AIRFLOW_ADMIN_PASSWORD:-airflow}
+
+  airflow-apiserver:
+    <<: *airflow-common
+    command: api-server
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/api/v2/monitor/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    depends_on:
+      <<: *airflow-depends
+      airflow-init:
+        condition: service_completed_successfully
+    mem_limit: 1g
+    restart: unless-stopped
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
+      interval: 60s
+      timeout: 45s
+      retries: 5
+      start_period: 120s
+    depends_on:
+      <<: *airflow-depends
+      airflow-init:
+        condition: service_completed_successfully
+      minio:
+        condition: service_started
+    # Ingest tasks run inside the scheduler (LocalExecutor) and load the embedding model.
+    mem_limit: 2g
+    restart: unless-stopped
+
+  airflow-dag-processor:
+    <<: *airflow-common
+    command: dag-processor
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type DagProcessorJob --hostname "$${HOSTNAME}"']
+      interval: 60s
+      timeout: 45s
+      retries: 5
+      start_period: 120s
+    depends_on:
+      <<: *airflow-depends
+      airflow-init:
+        condition: service_completed_successfully
+    mem_limit: 768m
+    restart: unless-stopped
+
+  ollama:
+    # Optional local LLM: `make up-llm`, then `docker compose exec ollama ollama pull qwen2.5:1.5b`
+    image: ollama/ollama:0.40.16
+    profiles: ["llm"]
+    volumes:
+      - ollama-data:/root/.ollama
+    mem_limit: 3g
+    restart: unless-stopped
+
+volumes:
+  pg-data:
+  minio-data:
+  hf-cache:
+  airflow-logs:
+  ollama-data:

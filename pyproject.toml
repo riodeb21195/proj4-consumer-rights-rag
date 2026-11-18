@@ -35,6 +35,9 @@ build-backend = "uv_build"
 [tool.uv.build-backend]
 module-name = "rag"
 
+[tool.uv]
+default-groups = ["dev", "ui"]
+
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
 
@@ -58,11 +61,11 @@ ignore = ["S101"]
 python_version = "3.12"
 strict = true
 mypy_path = "src"
-packages = ["rag"]
+files = ["src", "app", "airflow/dags", "scripts"]
 
 [[tool.mypy.overrides]]
 # Not installed in the local dev venv (no PyTorch wheels for Intel Macs), present in Docker/CI.
-module = ["sentence_transformers.*"]
+module = ["sentence_transformers.*", "airflow.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -77,6 +80,7 @@ source = ["src/rag"]
 branch = true
 
 [tool.coverage.report]
+fail_under = 80
 show_missing = true
 skip_covered = true
 
@@ -90,4 +94,8 @@ dev = [
     "ruff>=0.17.5",
     "testcontainers[minio,postgres]>=4.15.0",
     "types-lxml>=2026.2.16",
+]
+ui = [
+    "httpx>=0.28.1",
+    "streamlit>=1.67.0",
 ]

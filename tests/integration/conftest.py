@@ -1,3 +1,4 @@
+import re
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -25,7 +26,7 @@ def minio() -> Iterator[MinioContainer]:
 @pytest.fixture
 def raw_store(minio: MinioContainer, request: pytest.FixtureRequest) -> RawStore:
     cfg = minio.get_config()
-    bucket = f"test-{request.node.name.lower().replace('_', '-')}"[:60]
+    bucket = "test-" + re.sub(r"[^a-z0-9]+", "-", request.node.name.lower()).strip("-")[:55]
     store = RawStore.from_settings(
         f"http://{cfg['endpoint']}", cfg["access_key"], cfg["secret_key"], bucket
     )

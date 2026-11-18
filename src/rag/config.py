@@ -81,6 +81,10 @@ class Settings(BaseSettings):
     rerank_enabled: bool = False
     rerank_model: str = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 
+    # Evaluation results shown in the UI and exported as metrics
+    eval_results_dir: str = "evaluation/results"
+    eval_hit_rate_threshold: float = 0.6
+
     # Optional LLM
     llm_enabled: bool = False
     ollama_url: str = "http://ollama:11434"

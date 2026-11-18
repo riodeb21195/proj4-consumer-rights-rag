@@ -12,6 +12,15 @@ updates:
   - package-ecosystem: docker
     directories: ["/", "/app", "/airflow"]
     schedule: {interval: weekly}
+    ignore:
+      # The project targets Python 3.12 (spec); only patch updates of the base image.
+      - dependency-name: python
+        update-types: [version-update:semver-major, version-update:semver-minor]
+      - dependency-name: apache/airflow
+        update-types: [version-update:semver-major]
+    groups:
+      docker-images:
+        patterns: ["*"]
   - package-ecosystem: docker-compose
     directory: /
     schedule: {interval: weekly}

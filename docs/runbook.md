@@ -75,7 +75,7 @@ docker compose run --rm -e RAG_CHUNKING_STRATEGY=absatz api \
 - `make eval` evaluates all variants and writes `evaluation/results/<timestamp>_<variant>.json`.
   The API exports the latest and previous result per variant as Prometheus gauges.
 - Alerts (Prometheus → Alerts): `RagEvalBelowThreshold` (hit_rate@5 of the default variant below
-  the CI threshold), `RagEvalRegression` (drop of more than 2 points vs. the previous run),
+  `RAG_EVAL_HIT_RATE_THRESHOLD`, 0.65 on the full question set), `RagEvalRegression` (drop of more than 2 points vs. the previous run),
   `RagApiDown`, `RagApiHighErrorRate`, `RagAskLatencyHigh`.
 - After a regression: compare the two result files (`per_question` shows the rank per question),
   check `ingest_runs` for changed laws and `git log` for retrieval changes.

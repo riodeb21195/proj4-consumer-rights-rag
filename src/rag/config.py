@@ -74,7 +74,8 @@ class Settings(BaseSettings):
     embedding_batch_size: int = 16
 
     # Retrieval
-    retrieval_mode: Literal["vector", "fulltext", "hybrid"] = "hybrid"
+    # Default chosen by evaluation (docs/evaluation.md, ADR 0006); hybrid/fulltext stay selectable.
+    retrieval_mode: Literal["vector", "fulltext", "hybrid"] = "vector"
     top_k: int = 5
     rrf_k: int = 60
     candidate_pool: int = 30
@@ -83,7 +84,9 @@ class Settings(BaseSettings):
 
     # Evaluation results shown in the UI and exported as metrics
     eval_results_dir: str = "evaluation/results"
-    eval_hit_rate_threshold: float = 0.6
+    # Alert threshold for the full question set (hit_rate@5 = 0.71 on 2026-11-18, see
+    # docs/evaluation.md); fires when more than two of 45 questions are lost.
+    eval_hit_rate_threshold: float = 0.65
 
     # Optional LLM
     llm_enabled: bool = False

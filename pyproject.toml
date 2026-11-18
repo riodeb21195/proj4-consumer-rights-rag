@@ -61,7 +61,7 @@ ignore = ["S101"]
 python_version = "3.12"
 strict = true
 mypy_path = "src"
-files = ["src", "app", "airflow/dags", "scripts"]
+files = ["src", "app", "airflow/dags", "scripts", "evaluation"]
 
 [[tool.mypy.overrides]]
 # Not installed in the local dev venv (no PyTorch wheels for Intel Macs), present in Docker/CI.

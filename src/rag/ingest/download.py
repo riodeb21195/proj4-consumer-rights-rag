@@ -127,7 +127,7 @@ class LocalLawSource:
         path = self.directory / f"{slug}.xml"
         if not path.is_file():
             raise DownloadError(f"{path} not found")
-        return FetchResult(slug=slug, source_url=path.as_uri(), xml=path.read_bytes())
+        return FetchResult(slug=slug, source_url=path.resolve().as_uri(), xml=path.read_bytes())
 
 
 def make_source(base_url: str, timeout_s: float = 60.0, user_agent: str = "") -> LawSource:

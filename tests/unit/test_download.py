@@ -99,6 +99,14 @@ def test_local_source(tmp_path):
         src.fetch("missing")
 
 
+def test_local_source_relative_path(tmp_path, monkeypatch):
+    (tmp_path / "laws").mkdir()
+    (tmp_path / "laws" / "evo.xml").write_bytes(b"<d/>")
+    monkeypatch.chdir(tmp_path)
+    result = make_source("laws").fetch("evo")
+    assert result.source_url.startswith("file:///")
+
+
 def test_make_source(tmp_path):
     assert isinstance(make_source(f"file://{tmp_path}"), LocalLawSource)
     assert isinstance(make_source(str(tmp_path)), LocalLawSource)

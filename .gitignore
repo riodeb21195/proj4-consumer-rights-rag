@@ -1,0 +1,41 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Downloaded law XML / raw data (fixtures under tests/fixtures are curated and committed)
+data/
+*.zip
+
+# Model caches
+.cache/
+hf_cache/
+.hf_cache/
+models/
+**/huggingface/
+.ollama/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Airflow runtime files
+airflow/logs/
+airflow/plugins/__pycache__/

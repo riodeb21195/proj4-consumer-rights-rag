@@ -92,7 +92,7 @@ def _services(request: Request) -> Services:
 Svc = Annotated[Services, Depends(_services)]
 
 
-# --- schemas ----------------------------------------------------------------------------------
+# Request/response schemas
 
 
 class SearchRequest(BaseModel):
@@ -155,9 +155,6 @@ def _sources(hits: list[SearchHit]) -> list[Source]:
         )
         for n, h in enumerate(hits, start=1)
     ]
-
-
-# --- app --------------------------------------------------------------------------------------
 
 
 def create_app(

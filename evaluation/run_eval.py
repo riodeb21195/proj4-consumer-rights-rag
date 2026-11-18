@@ -6,8 +6,8 @@ between chunking strategies that produce different numbers of chunks per paragra
 
 Usage (inside the api container, see `make eval`):
     python -m evaluation.run_eval                       # all variants, results saved
-    python -m evaluation.run_eval --variants hybrid-paragraph --only-indexed \
-        --gate-variant hybrid-paragraph --min-hit-rate 0.8  # CI quality gate
+    python -m evaluation.run_eval --variants vector-paragraph --only-indexed \
+        --gate-variant vector-paragraph --min-hit-rate 0.70  # CI quality gate
 """
 
 from __future__ import annotations

@@ -122,7 +122,7 @@ class VectorStore:
             self.conn.execute(sql_file.read_text(encoding="utf-8").encode())
         register_vector(self.conn)
 
-    # --- runs ---------------------------------------------------------------------------------
+    # Runs
 
     def start_run(self, trigger: str, index_config_id: int | None) -> int:
         with self.conn.transaction():
@@ -146,7 +146,7 @@ class VectorStore:
     def get_run(self, run_id: int) -> Row | None:
         return self.conn.execute("SELECT * FROM ingest_runs WHERE id = %s", (run_id,)).fetchone()
 
-    # --- index configs ------------------------------------------------------------------------
+    # Index configs
 
     def ensure_index_config(self, strategy: str, version: str, model: str, dim: int) -> IndexConfig:
         with self.conn.transaction():
@@ -197,7 +197,7 @@ class VectorStore:
             row["embedding_dim"],
         )
 
-    # --- laws and versions --------------------------------------------------------------------
+    # Laws and versions
 
     def upsert_law(self, slug: str, abbreviation: str, title: str) -> None:
         self.conn.execute(
@@ -279,7 +279,7 @@ class VectorStore:
             "SELECT * FROM law_versions WHERE law_slug = %s ORDER BY id", (slug,)
         ).fetchall()
 
-    # --- norms --------------------------------------------------------------------------------
+    # Norms
 
     def norm_hashes(self, slug: str) -> dict[str, tuple[int, str]]:
         rows = self.conn.execute(
@@ -365,7 +365,7 @@ class VectorStore:
             for r in rows
         ]
 
-    # --- chunks -------------------------------------------------------------------------------
+    # Chunks
 
     def replace_chunks(
         self,
@@ -441,7 +441,7 @@ class VectorStore:
             (list(chunk_ids),),
         ).fetchall()
 
-    # --- search -------------------------------------------------------------------------------
+    # Search
 
     def vector_search(
         self, config_id: int, embedding: np.ndarray[Any, np.dtype[np.float32]], limit: int
@@ -469,7 +469,7 @@ class VectorStore:
         ).fetchall()
         return [_hit(r) for r in rows]
 
-    # --- answer lineage -----------------------------------------------------------------------
+    # Answer lineage
 
     def log_answer(
         self,

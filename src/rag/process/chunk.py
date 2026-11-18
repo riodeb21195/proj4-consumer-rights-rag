@@ -105,7 +105,6 @@ def _segments(norm: NormInput, strategy: str, max_chars: int) -> list[tuple[str,
         return units
     if strategy != "paragraph":
         raise ValueError(f"unknown chunking strategy: {strategy}")
-    # paragraph: merge consecutive units up to max_chars
     merged: list[tuple[str, list[str | None]]] = []
     for text, label in units:
         if merged and len(merged[-1][0]) + 1 + len(text) <= max_chars:

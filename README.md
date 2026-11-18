@@ -9,7 +9,7 @@ laws up to date and searchable, and answers questions with the exact law and par
 > **Not legal advice.** Answers are retrieved passages of statutory text, possibly incomplete or
 > out of context. For a real case, ask a consumer advice centre (Verbraucherzentrale) or a lawyer.
 
-[Screenshot der Streamlit-App einfügen]
+![Streamlit chat: a lay question about mobile contract terms, answered with § 56 TKG first](docs/images/streamlit-chat.png)
 
 ```mermaid
 flowchart LR

@@ -10,6 +10,9 @@ dependencies = [
     "boto3>=1.44.5",
     "httpx>=0.28.1",
     "lxml>=6.1.3",
+    "numpy>=2.5.5",
+    "pgvector>=0.5.1",
+    "psycopg[binary]>=3.3.9",
     "pydantic-settings>=2.16.3",
 ]
 

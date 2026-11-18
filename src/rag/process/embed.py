@@ -33,7 +33,10 @@ class SentenceTransformerEmbedder:
         self.model_name = model_name
         self.batch_size = batch_size
         self._model = SentenceTransformer(model_name, device=device)
-        dim = self._model.get_sentence_embedding_dimension()
+        # sentence-transformers 6 renamed get_sentence_embedding_dimension.
+        get_dim = getattr(self._model, "get_embedding_dimension", None)
+        get_dim = get_dim or self._model.get_sentence_embedding_dimension
+        dim = get_dim()
         if dim is None:
             raise ValueError(f"{model_name} does not report an embedding dimension")
         self.dim = int(dim)

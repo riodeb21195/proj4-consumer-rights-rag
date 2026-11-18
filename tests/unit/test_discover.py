@@ -26,3 +26,16 @@ def test_check_selection_reports_missing():
 def test_fetch_toc():
     client = httpx.Client(transport=httpx.MockTransport(lambda r: httpx.Response(200, content=TOC)))
     assert "bgb" in fetch_toc("https://example.test", client=client)
+
+
+def test_main_reports_missing(monkeypatch):
+    import rag.ingest.discover as discover
+
+    monkeypatch.setenv("RAG_LAWS", '[{"slug": "bgb"}, {"slug": "gone"}]')
+    discover.get_settings.cache_clear()
+    monkeypatch.setattr(discover, "fetch_toc", lambda base, client: parse_toc(TOC))
+    assert discover.main() == 1
+    monkeypatch.setenv("RAG_LAWS", '[{"slug": "bgb"}]')
+    discover.get_settings.cache_clear()
+    assert discover.main() == 0
+    discover.get_settings.cache_clear()

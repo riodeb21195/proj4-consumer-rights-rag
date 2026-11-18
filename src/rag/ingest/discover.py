@@ -9,7 +9,8 @@ from urllib.parse import urlparse
 import httpx
 from lxml import etree
 
-from rag.config import LawSelection
+from rag.config import LawSelection, get_settings
+from rag.logging import configure_logging
 
 log = logging.getLogger(__name__)
 
@@ -50,3 +51,25 @@ def check_selection(selection: list[LawSelection], toc: dict[str, TocEntry]) -> 
     for slug in missing:
         log.error("configured law not found in table of contents", extra={"law": slug})
     return missing
+
+
+def main() -> int:
+    """Exit non-zero if a configured law is no longer published (first task of the DAG)."""
+    settings = get_settings()
+    configure_logging(settings.log_level)
+    client = httpx.Client(
+        timeout=settings.http_timeout_s,
+        follow_redirects=True,
+        headers={"User-Agent": settings.user_agent},
+    )
+    toc = fetch_toc(settings.law_base_url, client)
+    missing = check_selection(settings.laws, toc)
+    log.info(
+        "sources checked",
+        extra={"published": len(toc), "configured": len(settings.laws), "missing": missing},
+    )
+    return 1 if missing else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

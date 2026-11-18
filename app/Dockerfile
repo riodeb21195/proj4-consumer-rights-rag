@@ -1,6 +1,6 @@
 FROM ghcr.io/astral-sh/uv:0.13.8 AS uv
 
-FROM python:3.12-slim AS build
+FROM python:3.15-slim AS build
 COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=never \
     UV_PROJECT_ENVIRONMENT=/opt/venv
@@ -10,7 +10,7 @@ COPY pyproject.toml uv.lock ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --only-group ui
 
-FROM python:3.12-slim
+FROM python:3.15-slim
 RUN useradd --create-home --uid 50000 rag
 COPY --from=build /opt/venv /opt/venv
 WORKDIR /srv

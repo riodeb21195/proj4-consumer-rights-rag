@@ -2,7 +2,7 @@
 SHELL := /bin/bash
 COMPOSE := docker compose
 
-.PHONY: help up up-llm down ingest eval test lint format clean logs ps
+.PHONY: help up up-llm down ingest eval scenarios test lint format clean logs ps
 
 help: ## Show available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-12s %s\n", $$1, $$2}'
@@ -22,6 +22,11 @@ ingest: ## Trigger the Airflow ingest DAG and wait for it
 eval: ## Evaluate retrieval variants; results are versioned in evaluation/results/
 	$(COMPOSE) run --rm --no-deps -e GIT_SHA=$$(git rev-parse --short HEAD) api \
 		python -m evaluation.run_eval $(ARGS)
+
+scenarios: ## Run the failure-scenario demos against the running stack
+	@for s in law_changed paragraph_repealed broken_xml duplicate_ingest; do \
+		$(COMPOSE) run --rm --no-deps api python scripts/scenario_$$s.py || exit 1; \
+	done
 
 logs: ## Follow logs of all services
 	$(COMPOSE) logs -f --tail=100

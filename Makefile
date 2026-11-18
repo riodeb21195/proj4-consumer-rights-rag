@@ -19,6 +19,10 @@ down: ## Stop the stack (keeps volumes)
 ingest: ## Trigger the Airflow ingest DAG and wait for it
 	./scripts/trigger_ingest.sh
 
+eval: ## Evaluate retrieval variants; results are versioned in evaluation/results/
+	$(COMPOSE) run --rm --no-deps -e GIT_SHA=$$(git rev-parse --short HEAD) api \
+		python -m evaluation.run_eval $(ARGS)
+
 logs: ## Follow logs of all services
 	$(COMPOSE) logs -f --tail=100
 

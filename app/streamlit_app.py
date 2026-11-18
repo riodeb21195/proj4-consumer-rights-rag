@@ -27,7 +27,7 @@ def chat_page() -> None:
     st.title("Was steht mir als Verbraucher zu?")
     st.warning(DISCLAIMER, icon="⚖️")
     with st.sidebar:
-        mode = st.selectbox("Suchmodus", ["hybrid", "vector", "fulltext"], index=0)
+        mode = st.selectbox("Suchmodus", ["vector", "hybrid", "fulltext"], index=0)
         k = st.slider("Anzahl Quellen", 1, 10, 5)
 
     if "history" not in st.session_state:

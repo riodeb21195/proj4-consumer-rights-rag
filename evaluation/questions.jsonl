@@ -1,0 +1,45 @@
+{"id": "q01", "question": "Wie lange habe ich Zeit, einen online gekauften Artikel zurückzugeben, ohne einen Grund zu nennen?", "expected": [{"law": "bgb", "paragraph": "§ 355"}, {"law": "bgb", "paragraph": "§ 356"}]}
+{"id": "q02", "question": "Ab wann läuft die Frist für den Widerruf, wenn ich Ware im Internet bestellt habe?", "expected": [{"law": "bgb", "paragraph": "§ 356"}]}
+{"id": "q03", "question": "Wer zahlt das Porto für die Rücksendung, wenn ich einen Onlinekauf widerrufe?", "expected": [{"law": "bgb", "paragraph": "§ 357"}]}
+{"id": "q04", "question": "Bis wann muss mir der Händler nach einem Widerruf mein Geld zurückzahlen?", "expected": [{"law": "bgb", "paragraph": "§ 357"}]}
+{"id": "q05", "question": "Bei welchen Bestellungen gibt es kein Widerrufsrecht, zum Beispiel bei Lebensmitteln oder maßangefertigten Sachen?", "expected": [{"law": "bgb", "paragraph": "§ 312g"}]}
+{"id": "q06", "question": "Habe ich ein Widerrufsrecht, wenn mir ein Vertreter an der Haustür einen Vertrag verkauft?", "expected": [{"law": "bgb", "paragraph": "§ 312g"}, {"law": "bgb", "paragraph": "§ 312b"}]}
+{"id": "q07", "question": "Welche Informationen muss mir ein Onlineshop vor der Bestellung geben?", "expected": [{"law": "bgb", "paragraph": "§ 312d"}]}
+{"id": "q08", "question": "Muss der Bestellbutton im Onlineshop mit 'zahlungspflichtig bestellen' beschriftet sein?", "expected": [{"law": "bgb", "paragraph": "§ 312j"}]}
+{"id": "q09", "question": "Muss es auf einer Webseite einen Kündigungsbutton für Abos geben?", "expected": [{"law": "bgb", "paragraph": "§ 312k"}]}
+{"id": "q10", "question": "Darf ein Händler mir eine Extragebühr berechnen, wenn ich mit Kreditkarte oder PayPal bezahle?", "expected": [{"law": "bgb", "paragraph": "§ 312a"}]}
+{"id": "q11", "question": "Wer gilt rechtlich als Verbraucher?", "expected": [{"law": "bgb", "paragraph": "§ 13"}]}
+{"id": "q12", "question": "Welche Rechte habe ich, wenn die gekaufte Ware kaputt oder mangelhaft ist?", "expected": [{"law": "bgb", "paragraph": "§ 437"}]}
+{"id": "q13", "question": "Wann hat eine gekaufte Sache rechtlich einen Mangel?", "expected": [{"law": "bgb", "paragraph": "§ 434"}]}
+{"id": "q14", "question": "Wie lange kann ich nach dem Kauf Gewährleistungsansprüche wegen eines Mangels geltend machen?", "expected": [{"law": "bgb", "paragraph": "§ 438"}]}
+{"id": "q15", "question": "Kann ich bei einem defekten Gerät wählen, ob es repariert wird oder ich ein neues bekomme?", "expected": [{"law": "bgb", "paragraph": "§ 439"}]}
+{"id": "q16", "question": "Kann ich weniger bezahlen, wenn die Ware einen Mangel hat und ich sie trotzdem behalte?", "expected": [{"law": "bgb", "paragraph": "§ 441"}]}
+{"id": "q17", "question": "Wann kann ich vom Kaufvertrag zurücktreten, ohne dem Verkäufer vorher eine Frist zu setzen?", "expected": [{"law": "bgb", "paragraph": "§ 440"}, {"law": "bgb", "paragraph": "§ 323"}]}
+{"id": "q18", "question": "Muss ich beweisen, dass der Mangel schon beim Kauf vorhanden war, wenn er nach ein paar Monaten auftritt?", "expected": [{"law": "bgb", "paragraph": "§ 477"}]}
+{"id": "q19", "question": "Darf ein Händler beim Verkauf an Verbraucher die Gewährleistung ausschließen?", "expected": [{"law": "bgb", "paragraph": "§ 476"}]}
+{"id": "q20", "question": "Was muss in einer Herstellergarantie stehen und welche Rechte gibt sie mir?", "expected": [{"law": "bgb", "paragraph": "§ 443"}, {"law": "bgb", "paragraph": "§ 479"}]}
+{"id": "q21", "question": "Muss der Verkäufer mir für ein Smartphone Software-Updates bereitstellen?", "expected": [{"law": "bgb", "paragraph": "§ 327f"}, {"law": "bgb", "paragraph": "§ 475b"}]}
+{"id": "q22", "question": "Wann ist eine Klausel in den Allgemeinen Geschäftsbedingungen unwirksam, weil sie mich unangemessen benachteiligt?", "expected": [{"law": "bgb", "paragraph": "§ 307"}]}
+{"id": "q23", "question": "Darf ein Fitnessstudio-Vertrag mich in den AGB länger als zwei Jahre binden?", "expected": [{"law": "bgb", "paragraph": "§ 309"}]}
+{"id": "q24", "question": "Wie viele Monatsmieten darf der Vermieter höchstens als Kaution verlangen?", "expected": [{"law": "bgb", "paragraph": "§ 551"}]}
+{"id": "q25", "question": "Darf ich die Miete kürzen, wenn in meiner Wohnung die Heizung im Winter ausfällt?", "expected": [{"law": "bgb", "paragraph": "§ 536"}]}
+{"id": "q26", "question": "Wie stark darf der Vermieter die Miete erhöhen?", "expected": [{"law": "bgb", "paragraph": "§ 558"}]}
+{"id": "q27", "question": "Mit welcher Frist kann ich als Mieter meine Wohnung kündigen?", "expected": [{"law": "bgb", "paragraph": "§ 573c"}]}
+{"id": "q28", "question": "Kann ich einen Ratenkredit nach Vertragsschluss noch widerrufen?", "expected": [{"law": "bgb", "paragraph": "§ 495"}, {"law": "bgb", "paragraph": "§ 356b"}]}
+{"id": "q29", "question": "Kann ich von einer gebuchten Pauschalreise vor Reisebeginn zurücktreten und was kostet das?", "expected": [{"law": "bgb", "paragraph": "§ 651h"}]}
+{"id": "q30", "question": "Welche Rechte habe ich, wenn das Hotel meiner Pauschalreise erhebliche Mängel hat?", "expected": [{"law": "bgb", "paragraph": "§ 651i"}, {"law": "bgb", "paragraph": "§ 651m"}]}
+{"id": "q31", "question": "Muss im Supermarkt neben dem Preis auch der Preis pro Kilogramm oder Liter angegeben sein?", "expected": [{"law": "pangv_2022", "paragraph": "§ 4"}]}
+{"id": "q32", "question": "Muss ein Händler Endpreise inklusive Mehrwertsteuer angeben?", "expected": [{"law": "pangv_2022", "paragraph": "§ 3"}]}
+{"id": "q33", "question": "Welcher frühere Preis muss bei einer Rabattaktion angegeben werden?", "expected": [{"law": "pangv_2022", "paragraph": "§ 11"}]}
+{"id": "q34", "question": "Welche Rechte habe ich im Nahverkehr, wenn mein Zug mindestens 20 Minuten Verspätung hat?", "expected": [{"law": "evo_2023", "paragraph": "§ 11"}]}
+{"id": "q35", "question": "Wie viel muss ich zahlen, wenn ich im Zug ohne gültige Fahrkarte erwischt werde?", "expected": [{"law": "evo_2023", "paragraph": "§ 6"}]}
+{"id": "q36", "question": "Bekomme ich das Geld für eine Bahnfahrkarte zurück, die ich nicht benutzt habe?", "expected": [{"law": "evo_2023", "paragraph": "§ 9"}]}
+{"id": "q37", "question": "Wie lange darf ein Wechsel des Stromanbieters höchstens dauern?", "expected": [{"law": "enwg_2005", "paragraph": "§ 20a"}]}
+{"id": "q38", "question": "Wann muss mich mein Stromanbieter über eine Preiserhöhung informieren?", "expected": [{"law": "enwg_2005", "paragraph": "§ 41"}]}
+{"id": "q39", "question": "Darf mein Energieversorger mir den Strom abstellen, wenn ich eine Rechnung nicht bezahlt habe?", "expected": [{"law": "enwg_2005", "paragraph": "§ 41f"}, {"law": "enwg_2005", "paragraph": "§ 41g"}]}
+{"id": "q40", "question": "Was ist die Grundversorgung mit Strom und wer muss sie anbieten?", "expected": [{"law": "enwg_2005", "paragraph": "§ 36"}]}
+{"id": "q41", "question": "Wie lange darf die Mindestlaufzeit eines Handy- oder Internetvertrags höchstens sein?", "expected": [{"law": "tkg_2021", "paragraph": "§ 56"}]}
+{"id": "q42", "question": "Was kann ich tun, wenn mein Internet dauerhaft langsamer ist als im Vertrag versprochen?", "expected": [{"law": "tkg_2021", "paragraph": "§ 57"}]}
+{"id": "q43", "question": "Bekomme ich eine Entschädigung, wenn mein Festnetz- oder Internetanschluss tagelang gestört ist?", "expected": [{"law": "tkg_2021", "paragraph": "§ 58"}]}
+{"id": "q44", "question": "Darf mein Internet beim Wechsel des Anbieters länger ausfallen?", "expected": [{"law": "tkg_2021", "paragraph": "§ 59"}]}
+{"id": "q45", "question": "Muss mir der Mobilfunkanbieter vor Vertragsschluss eine Vertragszusammenfassung geben?", "expected": [{"law": "tkg_2021", "paragraph": "§ 54"}]}

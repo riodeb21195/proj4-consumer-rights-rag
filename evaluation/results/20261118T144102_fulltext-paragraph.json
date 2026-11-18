@@ -1,0 +1,519 @@
+{
+  "created_at": "2026-11-18T14:41:02+00:00",
+  "variant": "fulltext-paragraph",
+  "mode": "fulltext",
+  "rerank": false,
+  "index_config": {
+    "id": 1,
+    "chunking_strategy": "paragraph",
+    "chunking_version": "v1",
+    "embedding_model": "intfloat/multilingual-e5-small"
+  },
+  "git_sha": "b00b7e8",
+  "n_questions": 45,
+  "only_indexed": false,
+  "metrics": {
+    "hit_rate@1": 0.1333,
+    "hit_rate@3": 0.2,
+    "hit_rate@5": 0.3556,
+    "hit_rate@10": 0.4667,
+    "mrr": 0.2231
+  },
+  "per_question": [
+    {
+      "id": "q01",
+      "rank": null,
+      "top": [
+        "enwg_2005 § 95",
+        "tkg_2021 § 228",
+        "enwg_2005 § 54c",
+        "bgb § 308",
+        "enwg_2005 § 54a"
+      ]
+    },
+    {
+      "id": "q02",
+      "rank": 13,
+      "top": [
+        "bgb § 475",
+        "bgb § 355",
+        "tkg_2021 § 13",
+        "bgb § 475b",
+        "bgb § 479b"
+      ]
+    },
+    {
+      "id": "q03",
+      "rank": 10,
+      "top": [
+        "bgb § 355",
+        "bgb § 360",
+        "tkg_2021 § 102",
+        "bgb § 357b",
+        "pangv_2022 § 10"
+      ]
+    },
+    {
+      "id": "q04",
+      "rank": 13,
+      "top": [
+        "bgb § 355",
+        "bgb § 360",
+        "tkg_2021 § 102",
+        "bgb § 357b",
+        "bgb § 356a"
+      ]
+    },
+    {
+      "id": "q05",
+      "rank": 14,
+      "top": [
+        "bgb § 650g",
+        "bgb § 439",
+        "bgb § 641",
+        "bgb § 650b",
+        "bgb § 433"
+      ]
+    },
+    {
+      "id": "q06",
+      "rank": 3,
+      "top": [
+        "bgb § 360",
+        "bgb § 312",
+        "bgb § 312g",
+        "bgb § 356",
+        "tkg_2021 § 56"
+      ]
+    },
+    {
+      "id": "q07",
+      "rank": null,
+      "top": [
+        "bgb § 650g",
+        "tkg_2021 § 79",
+        "tkg_2021 § 199",
+        "bgb § 641",
+        "tkg_2021 § 80"
+      ]
+    },
+    {
+      "id": "q08",
+      "rank": 4,
+      "top": [
+        "bgb § 650g",
+        "bgb § 641",
+        "bgb § 650b",
+        "bgb § 312j",
+        "bgb § 640"
+      ]
+    },
+    {
+      "id": "q09",
+      "rank": 1,
+      "top": [
+        "bgb § 312k",
+        "enwg_2005 § 111a",
+        "bgb § 312j",
+        "bgb § 312l",
+        "bgb § 338"
+      ]
+    },
+    {
+      "id": "q10",
+      "rank": null,
+      "top": [
+        "pangv_2022 § 16",
+        "pangv_2022 Anlage",
+        "tkg_2021 § 112",
+        "bgb § 556e",
+        "bgb § 559"
+      ]
+    },
+    {
+      "id": "q11",
+      "rank": null,
+      "top": [
+        "bgb § 357",
+        "bgb § 312a",
+        "bgb § 327p",
+        "bgb § 327r",
+        "bgb § 356"
+      ]
+    },
+    {
+      "id": "q12",
+      "rank": null,
+      "top": [
+        "bgb § 475",
+        "bgb § 475b",
+        "bgb § 479b",
+        "bgb § 477",
+        "bgb § 479"
+      ]
+    },
+    {
+      "id": "q13",
+      "rank": 8,
+      "top": [
+        "bgb § 439",
+        "bgb § 433",
+        "bgb § 536a",
+        "bgb § 309",
+        "bgb § 442"
+      ]
+    },
+    {
+      "id": "q14",
+      "rank": null,
+      "top": [
+        "bgb § 442",
+        "bgb § 439",
+        "bgb § 445a",
+        "bgb § 475e",
+        "bgb § 536a"
+      ]
+    },
+    {
+      "id": "q15",
+      "rank": null,
+      "top": [
+        "tkg_2021 § 208a",
+        "tkg_2021 § 105",
+        "bgb § 264",
+        "bgb § 505a",
+        "bgb § 635"
+      ]
+    },
+    {
+      "id": "q16",
+      "rank": null,
+      "top": [
+        "bgb § 475",
+        "bgb § 475b",
+        "bgb § 475d",
+        "bgb § 475e",
+        "bgb § 479b"
+      ]
+    },
+    {
+      "id": "q17",
+      "rank": 4,
+      "top": [
+        "bgb § 450",
+        "bgb § 445a",
+        "bgb § 439",
+        "bgb § 323",
+        "tkg_2021 § 202"
+      ]
+    },
+    {
+      "id": "q18",
+      "rank": 24,
+      "top": [
+        "bgb § 439",
+        "bgb § 442",
+        "bgb § 445a",
+        "bgb § 475e",
+        "bgb § 475"
+      ]
+    },
+    {
+      "id": "q19",
+      "rank": null,
+      "top": [
+        "bgb § 327p",
+        "bgb § 312a",
+        "bgb § 327r",
+        "bgb § 445a",
+        "bgb § 356"
+      ]
+    },
+    {
+      "id": "q20",
+      "rank": 14,
+      "top": [
+        "bgb § 536b",
+        "bgb § 328",
+        "bgb § 453",
+        "evo_2023 § 11",
+        "enwg_2005 § 8"
+      ]
+    },
+    {
+      "id": "q21",
+      "rank": null,
+      "top": [
+        "bgb § 450",
+        "bgb § 445a",
+        "bgb § 327b",
+        "bgb § 327c",
+        "bgb § 439"
+      ]
+    },
+    {
+      "id": "q22",
+      "rank": 2,
+      "top": [
+        "bgb § 305",
+        "bgb § 307",
+        "bgb § 308",
+        "enwg_2005 § 38a",
+        "bgb § 306"
+      ]
+    },
+    {
+      "id": "q23",
+      "rank": 5,
+      "top": [
+        "bgb § 360",
+        "bgb § 312",
+        "bgb § 312g",
+        "tkg_2021 § 56",
+        "bgb § 309"
+      ]
+    },
+    {
+      "id": "q24",
+      "rank": 6,
+      "top": [
+        "tkg_2021 § 112",
+        "bgb § 562b",
+        "bgb § 573",
+        "bgb § 575",
+        "tkg_2021 § 72"
+      ]
+    },
+    {
+      "id": "q25",
+      "rank": 15,
+      "top": [
+        "bgb § 559",
+        "bgb § 556g",
+        "bgb § 543",
+        "bgb § 563",
+        "bgb § 566c"
+      ]
+    },
+    {
+      "id": "q26",
+      "rank": 4,
+      "top": [
+        "bgb § 559",
+        "bgb § 556g",
+        "bgb § 543",
+        "bgb § 558",
+        "bgb § 563"
+      ]
+    },
+    {
+      "id": "q27",
+      "rank": null,
+      "top": [
+        "bgb § 543",
+        "bgb § 569",
+        "bgb § 555d",
+        "bgb § 563",
+        "bgb § 314"
+      ]
+    },
+    {
+      "id": "q28",
+      "rank": 19,
+      "top": [
+        "bgb § 355",
+        "bgb § 360",
+        "tkg_2021 § 102",
+        "bgb § 356c",
+        "bgb § 357b"
+      ]
+    },
+    {
+      "id": "q29",
+      "rank": 1,
+      "top": [
+        "bgb § 651h",
+        "bgb § 651i",
+        "bgb § 323",
+        "bgb § 651g",
+        "bgb § 651a"
+      ]
+    },
+    {
+      "id": "q30",
+      "rank": 6,
+      "top": [
+        "enwg_2005 § 5d",
+        "bgb § 536b",
+        "bgb § 309",
+        "bgb § 442",
+        "bgb § 536a"
+      ]
+    },
+    {
+      "id": "q31",
+      "rank": 21,
+      "top": [
+        "tkg_2021 § 112",
+        "tkg_2021 § 110",
+        "pangv_2022 § 5",
+        "enwg_2005 § 38a",
+        "pangv_2022 § 13"
+      ]
+    },
+    {
+      "id": "q32",
+      "rank": null,
+      "top": [
+        "bgb § 559c",
+        "enwg_2005 § 12c",
+        "enwg_2005 § 23c",
+        "enwg_2005 § 41c",
+        "tkg_2021 § 3"
+      ]
+    },
+    {
+      "id": "q33",
+      "rank": null,
+      "top": [
+        "tkg_2021 § 112",
+        "tkg_2021 § 110",
+        "enwg_2005 § 38a",
+        "pangv_2022 § 3",
+        "pangv_2022 § 13"
+      ]
+    },
+    {
+      "id": "q34",
+      "rank": 1,
+      "top": [
+        "evo_2023 § 11",
+        "bgb § 322",
+        "bgb § 328",
+        "bgb § 348",
+        "bgb § 453"
+      ]
+    },
+    {
+      "id": "q35",
+      "rank": 4,
+      "top": [
+        "evo_2023 § 11",
+        "bgb § 322",
+        "bgb § 348",
+        "evo_2023 § 6",
+        "bgb § 274"
+      ]
+    },
+    {
+      "id": "q36",
+      "rank": 4,
+      "top": [
+        "bgb § 251",
+        "bgb § 250",
+        "bgb § 253",
+        "evo_2023 § 9",
+        "tkg_2021 § 134"
+      ]
+    },
+    {
+      "id": "q37",
+      "rank": 5,
+      "top": [
+        "tkg_2021 § 112",
+        "tkg_2021 § 72",
+        "bgb § 308",
+        "bgb § 496",
+        "enwg_2005 § 20a"
+      ]
+    },
+    {
+      "id": "q38",
+      "rank": null,
+      "top": [
+        "bgb § 651g",
+        "bgb § 651f",
+        "enwg_2005 § 38a",
+        "enwg_2005 § 49b",
+        "bgb § 312d"
+      ]
+    },
+    {
+      "id": "q39",
+      "rank": 3,
+      "top": [
+        "tkg_2021 § 62",
+        "enwg_2005 § 42",
+        "enwg_2005 § 41f",
+        "enwg_2005 § 11",
+        "enwg_2005 § 42a"
+      ]
+    },
+    {
+      "id": "q40",
+      "rank": 9,
+      "top": [
+        "tkg_2021 § 61",
+        "enwg_2005 § 41g",
+        "enwg_2005 § 38",
+        "tkg_2021 § 59",
+        "pangv_2022 § 10"
+      ]
+    },
+    {
+      "id": "q41",
+      "rank": null,
+      "top": [
+        "tkg_2021 § 112",
+        "tkg_2021 § 72",
+        "bgb § 308",
+        "enwg_2005 § 43f",
+        "bgb § 309"
+      ]
+    },
+    {
+      "id": "q42",
+      "rank": 21,
+      "top": [
+        "bgb § 312",
+        "bgb § 360",
+        "bgb § 312g",
+        "tkg_2021 § 56",
+        "bgb § 311b"
+      ]
+    },
+    {
+      "id": "q43",
+      "rank": 1,
+      "top": [
+        "tkg_2021 § 58",
+        "enwg_2005 § 17e",
+        "bgb § 651h",
+        "tkg_2021 § 175",
+        "bgb § 251"
+      ]
+    },
+    {
+      "id": "q44",
+      "rank": 1,
+      "top": [
+        "tkg_2021 § 59",
+        "tkg_2021 § 61",
+        "bgb § 308",
+        "bgb § 496",
+        "tkg_2021 § 56"
+      ]
+    },
+    {
+      "id": "q45",
+      "rank": 1,
+      "top": [
+        "tkg_2021 § 54",
+        "bgb § 356c",
+        "bgb § 305",
+        "bgb § 311a",
+        "bgb § 312f"
+      ]
+    }
+  ]
+}

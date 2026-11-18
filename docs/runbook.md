@@ -94,6 +94,20 @@ Every `/ask` response contains an `answer_id`. `GET /lineage/{answer_id}` return
 the chunk ids, the law version (builddate, "Stand", XML SHA-256) and the MinIO key of the raw XML
 each chunk came from.
 
+## Development
+
+```bash
+uv sync                 # Python 3.12; the ml extra (torch) installs only on Linux
+make lint               # ruff, ruff format --check, mypy (strict)
+make test               # pytest with unit + integration tests (Docker needed), coverage
+make eval               # evaluation inside the api container
+make scenarios          # failure-scenario demos
+make help               # all targets
+```
+
+Layout: `src/rag/` (ingest, process, store, retrieval, api), `airflow/dags/`, `db/init/`
+(schema), `evaluation/`, `app/` (Streamlit), `monitoring/`, `scripts/`, `tests/`.
+
 ## Reset
 
 ```bash

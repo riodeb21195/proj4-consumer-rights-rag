@@ -186,6 +186,39 @@ services:
     mem_limit: 768m
     restart: unless-stopped
 
+  prometheus:
+    image: prom/prometheus:v3.16.0
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.retention.time=15d
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml:ro
+      - prometheus-data:/prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - api
+    mem_limit: 256m
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:13.2.6
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /var/lib/grafana/dashboards/rag-overview.json
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    mem_limit: 256m
+    restart: unless-stopped
+
   ollama:
     # Optional local LLM: `make up-llm`, then `docker compose exec ollama ollama pull qwen2.5:1.5b`
     image: ollama/ollama:0.40.16
@@ -201,3 +234,5 @@ volumes:
   hf-cache:
   airflow-logs:
   ollama-data:
+  prometheus-data:
+  grafana-data:

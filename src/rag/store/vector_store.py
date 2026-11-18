@@ -207,6 +207,10 @@ class VectorStore:
             (slug, abbreviation, title),
         )
 
+    def law_abbreviation(self, slug: str) -> str:
+        row = self.conn.execute("SELECT abbreviation FROM laws WHERE slug = %s", (slug,)).fetchone()
+        return str(row["abbreviation"]) if row else slug
+
     def current_version(self, slug: str) -> LawVersion | None:
         row = self.conn.execute(
             "SELECT * FROM law_versions WHERE law_slug = %s AND is_current", (slug,)

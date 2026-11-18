@@ -16,12 +16,28 @@ dependencies = [
     "pydantic-settings>=2.16.3",
 ]
 
+[project.optional-dependencies]
+# Model runtime. Installed in the Docker images and CI (Linux); PyTorch ships no wheels for
+# Intel Macs any more, so the local dev venv runs without it (see docs/decisions).
+ml = [
+    "sentence-transformers>=6.3.0",
+    "torch>=2.15.0",
+]
+
 [build-system]
 requires = ["uv_build>=0.11.19,<0.14.0"]
 build-backend = "uv_build"
 
 [tool.uv.build-backend]
 module-name = "rag"
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [tool.ruff]
 line-length = 100
@@ -39,6 +55,11 @@ python_version = "3.12"
 strict = true
 mypy_path = "src"
 packages = ["rag"]
+
+[[tool.mypy.overrides]]
+# Not installed in the local dev venv (no PyTorch wheels for Intel Macs), present in Docker/CI.
+module = ["sentence_transformers.*"]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

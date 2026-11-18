@@ -1,5 +1,5 @@
 # API + pipeline image (also used for ingest CLI, evaluation and demo scripts).
-FROM ghcr.io/astral-sh/uv:0.13.8 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.9 AS uv
 
 FROM python:3.12-slim AS build
 COPY --from=uv /uv /usr/local/bin/uv

@@ -221,7 +221,7 @@ services:
 
   ollama:
     # Optional local LLM: `make up-llm`, then `docker compose exec ollama ollama pull qwen2.5:1.5b`
-    image: ollama/ollama:0.40.16
+    image: ollama/ollama:0.40.17
     profiles: ["llm"]
     volumes:
       - ollama-data:/root/.ollama

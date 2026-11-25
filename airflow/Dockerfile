@@ -1,6 +1,6 @@
 # Airflow with the RAG package in a separate virtualenv: the pipeline's dependencies
 # (torch, sentence-transformers, its own FastAPI) never mix with Airflow's pinned ones.
-FROM ghcr.io/astral-sh/uv:0.13.8 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.10 AS uv
 
 FROM apache/airflow:3.4.0-python3.12
 COPY --from=uv /uv /usr/local/bin/uv
